@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "latest",
+    "baileys": "npm:baileys-dtz",
     "baileys": "latest",
     "express": "^4.18.2",
     "puppeteer": "24.34.0",
