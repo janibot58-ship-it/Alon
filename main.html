@@ -1,309 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALONE MINI | Advanced V8</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    
-    <style>
-        :root {
-            --primary: #00f2ff;
-            --danger: #ff003c;
-            --dark: #020205;
-            --glass: rgba(5, 5, 10, 0.85);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>𝐌𝐀𝐃𝐔𝐒𝐀𝐍𝐊𝐀 𝐌𝐃 𝐌𝐈𝐍𝐈 𝐁𝐎𝐓</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <style>
+    /* Body & Canvas */
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: monospace;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-        body {
-            background-color: var(--dark);
-            color: #fff;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      /* text above canvas */
+    }
 
-        /* --- 3D Particle Background --- */
-        #bg-canvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            opacity: 0.4;
-        }
+    /* Box */
+    .box {
+      width: 300px;
+      padding: 25px;
+      margin: 0;
+      background-color: #000000;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 25px rgb(0, 38, 255);
+      animation: glow 3s infinite alternate;
+    }
 
-        /* --- Advanced Alert System --- */
-        #alert-system {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            width: 300px;
-        }
+    @keyframes glow {
+      0% {
+        box-shadow: 0 0 25px rgb(0, 38, 255);
+      }
 
-        .cyber-alert {
-            background: var(--glass);
-            border-left: 5px solid var(--primary);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transform: translateX(120%);
-            transition: 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
+      25% {
+        box-shadow: 0 0 25px rgb(0, 255, 38);
+      }
 
-        .cyber-alert.active { transform: translateX(0); }
-        .alert-error { border-left-color: var(--danger); }
+      50% {
+        box-shadow: 0 0 25px rgb(255, 38, 0);
+      }
 
-        /* --- Page State Management --- */
-        .page {
-            position: absolute;
-            width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            transition: 0.8s cubic-bezier(1, 0, 0, 1);
-        }
+      75% {
+        box-shadow: 0 0 25px rgb(255, 255, 0);
+      }
 
-        #page-terminal { transform: scale(0.5); opacity: 0; pointer-events: none; }
-        .active-system #page-landing { transform: scale(1.5); opacity: 0; pointer-events: none; }
-        .active-system #page-terminal { transform: scale(1); opacity: 1; pointer-events: auto; }
+      100% {
+        box-shadow: 0 0 25px rgb(0, 38, 255);
+      }
+    }
 
-        /* --- Terminal Card --- */
-        .cyber-card {
-            background: var(--glass);
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            padding: 40px;
-            width: 90%;
-            max-width: 440px;
-            border-radius: 30px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
+    /* Headings */
+    h3 {
+      color: #00f2ff;
+      margin: 10px 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-style: oblique;
+      font-size: 24px;
+      background: linear-gradient(90deg, #00f2ff, #ff00ff, #00ff00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-        /* --- Circle Bot Logo --- */
-        .logo-wrapper {
-            position: relative;
-            width: 160px; height: 160px;
-            margin: 0 auto 30px;
-        }
+    h4 {
+      color: #c200c2;
+      margin: 10px 0;
+      font-size: 16px;
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      font-weight: 100;
+    }
 
-        .bot-logo {
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            border: 3px solid var(--primary);
-            padding: 5px;
-            box-shadow: 0 0 30px var(--primary);
-            object-fit: cover;
-        }
+    h6 {
+      color: #ffffff;
+      margin: 10px 0;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      font-style: inherit;
+    }
 
-        .scan-ring {
-            position: absolute;
-            top: -10px; left: -10px; bottom: -10px; right: -10px;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            border-top-color: transparent;
-            border-bottom-color: transparent;
-            animation: spin 3s linear infinite;
-        }
+    /* Input */
+    .input-container {
+      display: flex;
+      width: 100%;
+      margin-top: 15px;
+    }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+    .input-container input,
+    .input-container button {
+      height: 3rem;
+      font-size: 1rem;
+      border: none;
+      outline: none;
+      box-sizing: border-box;
+    }
 
-        /* --- Inputs & Actions --- */
-        h1 { font-family: 'Orbitron'; letter-spacing: 5px; color: var(--primary); margin-bottom: 20px; }
+    .input-container input {
+      width: 70%;
+      border-radius: 0.8rem 0 0 0.8rem;
+      background: #e0f7ff;
+      color: #000;
+      padding-left: 1rem;
+    }
 
-        .cyber-input {
-            width: 100%;
-            padding: 18px;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid #333;
-            border-radius: 12px;
-            color: var(--primary);
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 20px;
-            outline: none;
-            transition: 0.3s;
-        }
+    .input-container button {
+      width: 30%;
+      border-radius: 0 0.8rem 0.8rem 0;
+      background: #00bfff;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-        .cyber-input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary); }
+    .input-container button:hover {
+      background: #00ffff;
+      color: #000;
+    }
 
-        .btn-main {
-            width: 100%;
-            padding: 20px;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-family: 'Orbitron';
-            font-weight: 900;
-            cursor: pointer;
-            letter-spacing: 2px;
-            transition: 0.4s;
-        }
-
-        .btn-main:hover { transform: scale(1.02); box-shadow: 0 0 30px var(--primary); }
-
-        /* --- Contact/Support Dock --- */
-        .contact-dock {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 20px;
-        }
-
-        .contact-link {
-            color: #fff;
-            font-size: 20px;
-            transition: 0.3s;
-            text-decoration: none;
-        }
-
-        .contact-link:hover { color: var(--primary); transform: translateY(-5px); }
-
-        #code-display {
-            font-size: 38px;
-            color: var(--primary);
-            font-family: 'Orbitron';
-            margin: 20px 0;
-            display: none;
-            letter-spacing: 8px;
-        }
-    </style>
+    a.centered-text {
+      color: white;
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
+
 <body>
 
-    <canvas id="bg-canvas"></canvas>
-    <div id="alert-system"></div>
+  <!-- Canvas for Matrix -->
+  <canvas id="matrix"></canvas>
 
-    <audio id="hacker-audio" loop>
-        <source src="https://files.catbox.moe/p9fbe4.mp3" type="audio/mpeg">
-    </audio>
+  <div class="container">
+    <div class="box" id="box">
+      <div id="text">
+        <i class="fa fa-user" style="color:#00ffff;"></i>
+        <h3>WELCOME BOT USER</h3>
+        <h4>Created by 𝐌𝐀𝐃𝐔𝐒𝐀𝐍𝐊𝐀</h4>
+        <h6>🔢 𝙴nter 𝚈our 𝙽umber 𝚆ith 𝙲ountry 𝙲ode</h6>
 
-    <div class="page" id="page-landing">
-        <div class="cyber-card">
-            <div class="logo-wrapper">
-                <div class="scan-ring"></div>
-                <img src="https://files.catbox.moe/45oehj.jpeg" class="bot-logo">
-            </div>
-            <h1>ALONE MINI</h1>
-            <p style="color: #666; font-size: 10px; margin-bottom: 25px;">ADVANCED DEPLOYMENT V8.0</p>
-            <button class="btn-main" onclick="enterSystem()">INITIALIZE SYSTEM</button>
-            
-            <div class="contact-dock">
-                <a href="https://wa.me/yournumber" class="contact-link"><i class="fab fa-whatsapp"></i></a>
-                <a href="https://t.me/yourusername" class="contact-link"><i class="fab fa-telegram-plane"></i></a>
-                <a href="mailto:support@alone.com" class="contact-link"><i class="fas fa-headset"></i></a>
-            </div>
+        <div class="input-container">
+          <input placeholder="9478xxxxxxx" type="tel" id="number">
+          <button id="submit">Submit</button>
         </div>
+
+        <a id="waiting-message" class="centered-text" style="display: none;">Please wait a while...</a>
+        <main id="pair"></main>
+      </div>
     </div>
+  </div>
 
-    <div class="page" id="page-terminal">
-        <div class="cyber-card">
-            <h2 style="font-family: 'Orbitron'; font-size: 18px; margin-bottom: 20px;">UPLINK TERMINAL</h2>
-            <input type="tel" id="phoneNumber" class="cyber-input" placeholder="+94XXXXXXXXX">
-            <button class="btn-main" onclick="startHack()" id="genBtn">GENERATE UPLINK</button>
-            <div id="code-display">------</div>
-            
-            <div class="contact-dock">
-                <a href="https://chat.whatsapp.com/yourgroup" class="contact-link" title="Group"><i class="fas fa-users"></i></a>
-                <a href="#" class="contact-link" title="Support"><i class="fas fa-shield-alt"></i></a>
-                <a href="javascript:location.reload()" class="contact-link"><i class="fas fa-sync-alt"></i></a>
-            </div>
-        </div>
-    </div>
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script>
+    // Matrix Animation
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
 
-    <script>
-        // --- 3D Background Logic ---
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    let fontSize = 5;
+    let chinese = '田由甲申电口回日国山中土木金水火土竹米舟心手目耳口日月天风雨';
+    let chars = chinese.split('');
+    let columns = canvas.width / fontSize;
+    let drops = [];
 
-        let stars = [];
-        for(let i=0; i<200; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, z: Math.random()*canvas.width});
+    function initDrops() {
+      columns = canvas.width / fontSize;
+      drops = [];
+      for (let x = 0; x < columns; x++) {
+        drops[x] = Math.random() * canvas.height;
+      }
+    }
 
-        function drawStars() {
-            ctx.fillStyle = "black";
-            ctx.fillRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = "#00f2ff";
-            stars.forEach(s => {
-                let x = (s.x - canvas.width/2) * (canvas.width/s.z) + canvas.width/2;
-                let y = (s.y - canvas.height/2) * (canvas.width/s.z) + canvas.height/2;
-                let size = (1 - s.z/canvas.width) * 3;
-                ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI*2);
-                ctx.fill();
-                s.z -= 2;
-                if(s.z <= 0) s.z = canvas.width;
-            });
-            requestAnimationFrame(drawStars);
+    initDrops();
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#00ff00';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        drops[i] = (drops[i] * fontSize > canvas.height && Math.random() > 0.975) ? 0 : drops[i] + 1;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initDrops();
+    });
+
+    // WhatsApp Number Input
+    const a = document.getElementById("pair");
+    const b = document.getElementById("submit");
+    const c = document.getElementById("number");
+
+    async function Copy() {
+      let text = document.getElementById("copy").innerText;
+      let obj = document.getElementById("copy");
+      await navigator.clipboard.writeText(obj.innerText.replace('CODE: ', ''));
+      obj.innerText = "COPIED";
+      obj.style = "color:blue;font-weight:bold";
+      setTimeout(() => {
+        obj.innerText = text;
+        obj.style = "color:white;font-weight:bold";
+      }, 500);
+    }
+
+    b.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!c.value) {
+        a.innerHTML = '<a style="color:white;font-weight:bold">Enter your WhatsApp number with Country Code</a><br><br>';
+      } else if (c.value.replace(/[^0-9]/g, "").length < 11) {
+        a.innerHTML = '<a style="color:red;font-weight:bold">Invalid Number</a><br><br>';
+      } else {
+        const number = c.value.replace(/[^0-9]/g, "");
+        c.type = "text";
+        c.value = "+" + number;
+        c.style = "color:black;font-size:20px";
+        a.innerHTML = '<a style="color:white;font-weight:bold">Please Wait...</a><br><br>';
+        try {
+          let { data } = await axios(`/code?number=${number}`);
+          let code = data.code || "Service Unavailable";
+          a.innerHTML = `<font id="copy" onclick="Copy()" style="color:red;font-weight:bold" size="5">CODE: <span style="color:white;">${code}</span></font><br><br><br>`;
+        } catch (err) {
+          a.innerHTML = '<a style="color:red;font-weight:bold">Service Unavailable</a><br><br>';
         }
-        drawStars();
-
-        // --- Advanced Alert Logic ---
-        function sendAlert(msg, type = 'info') {
-            const container = document.getElementById('alert-system');
-            const alert = document.createElement('div');
-            alert.className = `cyber-alert ${type === 'error' ? 'alert-error' : ''}`;
-            alert.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i> <span>${msg}</span>`;
-            container.appendChild(alert);
-            setTimeout(() => alert.classList.add('active'), 100);
-            setTimeout(() => {
-                alert.classList.remove('active');
-                setTimeout(() => alert.remove(), 500);
-            }, 4000);
-        }
-
-        // --- Navigation & Hacking ---
-        function enterSystem() {
-            document.body.classList.add('active-system');
-            document.getElementById('hacker-audio').play().catch(() => {});
-            sendAlert("PROTOCOL_INIT: ACCESS GRANTED");
-        }
-
-        async function startHack() {
-            const num = document.getElementById('phoneNumber').value;
-            const btn = document.getElementById('genBtn');
-            const display = document.getElementById('code-display');
-
-            if(!num) {
-                sendAlert("ERROR: INVALID TARGET IDENTIFIER", "error");
-                return;
-            }
-
-            btn.innerText = "BYPASSING...";
-            sendAlert("INJECTING PAYLOAD... ENCRYPTING TUNNEL...");
-
-            try {
-                const { data } = await axios.get(`/code?number=${num}`);
-                if(data.code) {
-                    display.innerText = data.code;
-                    display.style.display = 'block';
-                    btn.innerText = "SUCCESS";
-                    sendAlert("UPLINK ESTABLISHED SUCCESSFULLY");
-                }
-            } catch (e) {
-                sendAlert("CRITICAL FAILURE: SERVER OFFLINE", "error");
-                btn.innerText = "RETRY";
-            }
-        }
-
-        // Interaction Fix for Audio
-        document.body.addEventListener('click', () => {
-            const audio = document.getElementById('hacker-audio');
-            if(audio.paused) audio.play();
-        }, {once: true});
-    </script>
+      }
+    });
+  </script>
 </body>
+
 </html>
